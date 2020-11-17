@@ -1,0 +1,8 @@
+# dotenv environment variables file
+.env
+.env.test
+
+.vscode
+
+# Dowloaded deno plugins
+.deno_plugins
