@@ -1,4 +1,6 @@
-import { MongoClient, ObjectId } from "https://deno.land/x/mongo@v0.13.0/mod.ts";
+import '../utils/loadEnv.ts';
+import { MongoClient, } from "https://deno.land/x/mongo@v0.20.0/mod.ts";
+import { ObjectId } from "https://deno.land/x/mongo@v0.20.0/bson/mod.ts";
 
 class DB {
     public client: MongoClient;
@@ -9,11 +11,10 @@ class DB {
         this.client = {} as MongoClient;
     }
 
-    connect() {
-        const client = new MongoClient();
-        client.connectWithUri(this.url);
+    async connect() {
+        this.client = new MongoClient;
+        await this.client.connect(this.url);
         console.log(`Connected to database ${this.dbName} at url: ${this.url}`);
-        this.client = client;
     }
 
     get getDatabase() {
@@ -24,9 +25,6 @@ class DB {
 const dbName = Deno.env.get('DB_NAME') || '';
 const dbHostUrl = Deno.env.get('DB_HOST_URL') || '';
 const db = new DB(dbName, dbHostUrl);
-db.connect();
+await db.connect();
 
-export {
-    db,
-    ObjectId
-};
+export { db, ObjectId };

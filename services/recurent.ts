@@ -12,7 +12,7 @@ export const createRecurent = async (newRecurent: NewRecurent) => {
 export const findById = async (recurentId: string) => {
     let id: ObjectId;
     try {
-        id = ObjectId(recurentId);
+        id = new ObjectId(recurentId);
     } catch (error) {
         throw new Error('Bad id');
     }
@@ -27,7 +27,7 @@ export const findById = async (recurentId: string) => {
 export const updateById = async (recurentId: string, toUpdate: UpdateRecurent) => {
     let id: ObjectId;
     try {
-        id = ObjectId(recurentId);
+        id = new ObjectId(recurentId);
     } catch (error) {
         throw new Error('Bad id');
     }
@@ -43,7 +43,7 @@ export const updateById = async (recurentId: string, toUpdate: UpdateRecurent) =
 export const deleteById = async (recurentId: string) => {
     let id: ObjectId;
     try {
-        id = ObjectId(recurentId);
+        id = new ObjectId(recurentId);
     } catch (error) {
         throw new Error('Bad id');
     }
@@ -62,6 +62,6 @@ export const getInNextMonth = async () => {
             $lt: limit
         }
     };
-    const foundRecur: Recurent[] = await recurents.find(filter);
+    const foundRecur: Recurent[] = await recurents.find(filter).toArray();
     return foundRecur;
 }
