@@ -21,7 +21,7 @@ export default async function (reunions: Reunion[]) {
             embed.fields?.push({
                 name: reu.fields.Name,
                 value: time,
-                inline: true
+                inline: false
             });
         })
 

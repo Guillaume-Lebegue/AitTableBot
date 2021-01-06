@@ -13,6 +13,6 @@ export default async function (reunion: Reunion) {
         const rolePing = `<@&${guild.roleNotifId}>`;
         const time = format(reunion.fields.Date, 'HH:mm');
 
-        await sendMessage(guild.channelNotifId, `${rolePing} Rendez-vous aujourd'hui à ${time} pour ${reunion.fields.Name}, rendez-vous sur ${reunion.fields.Lien}`);
+        await sendMessage(guild.channelNotifId, `${rolePing} Rendez-vous aujourd'hui à ${time} pour \`${reunion.fields.Name}\`, rendez-vous sur ${reunion.fields.Lien}`);
     })
 }
