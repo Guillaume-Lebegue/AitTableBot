@@ -18,7 +18,7 @@ export const setup = function (guildID: string) {
 export const execute = async function (inter: InteractionCommandPayload) {
     console.log('Got command test');
     //console.log('got command test, with message: ' + inter.data?.options[0].value);
-    const message = inter.data?.options[0].value?.toString();
+    const message = inter.data?.options ? inter.data?.options[0].value?.toString() : undefined;
 
     executeSlashCommand(inter.id, inter.token, {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
