@@ -1,22 +1,38 @@
-import { createSlashCommand, InteractionCommandPayload, Message, SlashCommandOptionType } from "https://deno.land/x/discordeno@10.0.1/mod.ts";
+import { InteractionCommandPayload, Message } from "https://deno.land/x/discordeno@10.0.1/mod.ts";
 import { createGuild } from './discordDB.ts';
 
-import setupGuildAction from '../actions/discord/setupGuild.ts';
-import testAction from '../actions/discord/test.ts';
-import setNotifAction from '../actions/discord/setNotif.ts';
+import * as setupGuildAction from '../actions/discord/setupGuild.ts';
+import * as testAction from '../actions/discord/test.ts';
+import * as setNotifAction from '../actions/discord/setNotif.ts';
+import * as addRecurentAction from '../actions/discord/addRecurent.ts';
+import * as addReunionAction from '../actions/discord/addReunion.ts';
 
-const commands: { [id: string] : (inter: InteractionCommandPayload) => unknown} = {
+interface GuildCmd {
+    execute: (inter: InteractionCommandPayload) => unknown,
+    setup: (guildID: string) => unknown
+}
+
+interface GlobalCMD {
+    execute: (inter: InteractionCommandPayload) => unknown,
+    setup: () => unknown
+}
+
+const globalCommands: { [id: string] : GlobalCMD} = {
     'setup': setupGuildAction,
+}
+
+const guildCommands: { [id: string] : GuildCmd} = {
     'test': testAction,
-    'setnotif': setNotifAction
+    'setnotif': setNotifAction,
+    'addrecurent': addRecurentAction,
+    'addreunion': addReunionAction
 }
 
 const setup = () => {
     console.log('Setup discord bot');
-    createSlashCommand({
-        name: 'setup',
-        description: 'Setup this bot in this guild'
-    });
+    
+    for (var key in globalCommands)
+        globalCommands[key].setup();
 }
 
 export const setupGuild = async (guildID: string) => {
@@ -29,37 +45,8 @@ export const setupGuild = async (guildID: string) => {
             console.error('Setup guild: ', err);
     }
 
-    createSlashCommand({
-        name: 'test',
-        description: 'test cmd',
-        guildID,
-        options: [
-            {
-                type: SlashCommandOptionType.STRING,
-                name: 'message',
-                description: 'Message to test'
-            }
-        ]
-    })
-
-    createSlashCommand({
-        name: 'setnotif',
-        description: 'Set channel and role for notification',
-        guildID,
-        options: [
-            {
-                type: SlashCommandOptionType.CHANNEL,
-                name: 'channel',
-                description: 'Channel where the notification will be set',
-                required: true
-            }, {
-                type: SlashCommandOptionType.ROLE,
-                name: 'role',
-                description: 'Role to ping with notification',
-                required: true
-            }
-        ]
-    })
+    for (var key in guildCommands)
+        guildCommands[key].setup(guildID);
 }
 
 export const onReady = () => {
@@ -74,8 +61,11 @@ export const onInteractionCreate = (data: InteractionCommandPayload) => {
     if (!data.data)
         return;
 
-    if (commands[data.data.name])
-        return commands[data.data.name](data);
+    if (guildCommands[data.data.name])
+        return guildCommands[data.data.name].execute(data);
+
+    if (globalCommands[data.data.name])
+        return globalCommands[data.data.name].execute(data);
 
     console.log('Unknown interaction: ', data);
 }

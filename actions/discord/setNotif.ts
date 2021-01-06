@@ -1,8 +1,29 @@
-import { cache, Channel, ChannelTypes, executeSlashCommand, InteractionCommandPayload, InteractionResponseType, Role } from "https://deno.land/x/discordeno@10.0.1/mod.ts";
+import { cache, Channel, ChannelTypes, createSlashCommand, executeSlashCommand, InteractionCommandPayload, InteractionResponseType, Role, SlashCommandOptionType } from "https://deno.land/x/discordeno@10.0.1/mod.ts";
 import * as DiscordDb from '../../services/discordDB.ts';
 import type * as DbType from '../../models/discord.ts';
 
-export default async function (inter: InteractionCommandPayload) {
+export const setup = function(guildID: string) {
+    createSlashCommand({
+        name: 'setnotif',
+        description: 'Set channel and role for notification',
+        guildID,
+        options: [
+            {
+                type: SlashCommandOptionType.CHANNEL,
+                name: 'channel',
+                description: 'Channel where the notification will be set',
+                required: true
+            }, {
+                type: SlashCommandOptionType.ROLE,
+                name: 'role',
+                description: 'Role to ping with notification',
+                required: true
+            }
+        ]
+    })
+}
+
+export const execute = async function (inter: InteractionCommandPayload) {
     var refusedReason: string | undefined;
     var channel: Channel | undefined;
     var role: Role | undefined;
