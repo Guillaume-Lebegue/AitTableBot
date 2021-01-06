@@ -1,8 +1,9 @@
 import './utils/loadEnv.ts';
 import { startBot, Intents } from "https://deno.land/x/discordeno@10.0.1/mod.ts";
 import * as DiscordS from "./services/discord.ts";
+import cronS from './services/cron.ts';
 
-startBot({
+await startBot({
     token: Deno.env.get('DISCORD_TOKEN') || '',
     intents: [
         Intents.GUILDS,
@@ -17,3 +18,5 @@ startBot({
         interactionCreate: DiscordS.onInteractionCreate as (data: unknown) => unknown
     }
 });
+
+cronS();
