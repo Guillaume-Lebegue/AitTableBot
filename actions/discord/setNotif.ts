@@ -10,11 +10,6 @@ export default async function (inter: InteractionCommandPayload) {
     const channelId = inter.data?.options.find((value) => value.name == 'channel')?.value?.toString();
     const roleId = inter.data?.options.find((value) => value.name == 'role')?.value?.toString();
 
-    console.log('Found guild: ', guild);
-
-    console.log('Given channel: ', channelId);
-    console.log('Given role: ', roleId);
-
     if (!channelId)
         refusedReason = 'Bad channel';
     if (!refusedReason && !roleId)

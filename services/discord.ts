@@ -19,9 +19,15 @@ const setup = () => {
     });
 }
 
-export const setupGuild = (guildID: string) => {
+export const setupGuild = async (guildID: string) => {
     console.log('Setup bot for guild ' + guildID);
-    createGuild({guildID}).then().catch();
+
+    try {
+        await createGuild({guildID: guildID})
+    } catch(err) {
+        if (err.message != 'Already exist')
+            console.error('Setup guild: ', err);
+    }
 
     createSlashCommand({
         name: 'test',

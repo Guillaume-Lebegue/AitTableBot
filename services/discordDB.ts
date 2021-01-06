@@ -4,15 +4,14 @@ import { db } from './dateBase.ts';
 const dataBase = db.getDatabase;
 const guilds = dataBase.collection<Guild>('guilds');
 
-export const createGuild = async (guild: Guild): Promise<Guild> => {
+export const createGuild = async (guild: Guild): Promise<void> => {
     try {
         await findByGuildId(guild.guildID);
-        throw new Error('Already exist');
     } catch (err) {
         const inserted = await guilds.insertOne(guild);
-        guild._id = inserted.to
-        return guild;
+        return;
     }
+    throw new Error('Already exist');
 }
 
 export const findAll = async (): Promise<Guild[]> => {
@@ -29,7 +28,7 @@ export const findByGuildId = async (guildID: string) => {
 }
 
 export const updateByGuildId = async (guildID: string, toUpdate: UpdateGuild) => {
-    const res = await guilds.updateOne({ guildID }, toUpdate);
+    const res = await guilds.updateOne({guildID }, {$set: toUpdate});
 
     if (res.modifiedCount != 1)
         throw new Error('Not found');
