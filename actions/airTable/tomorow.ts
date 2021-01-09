@@ -13,5 +13,6 @@ export default async function () {
     );
 
     const tomorow = toCome.filter(reu => reu.fields.Date < tomorowEnd);
-    await sendNotifTomorow(tomorow);
+    if (tomorow.length > 0)
+        await sendNotifTomorow(tomorow);
 }
